@@ -18,8 +18,7 @@ register_deactivation_hook( __FILE__, 'projectpentagon_remove' );
 
 function projectpentagon_install() {
 /* Creates new database field */
-add_option("projectpentagon_title", 'fgfhgThis it the Title of my Pentagram', '', 'yes');
-add_option("vizbang-which-cat", 'pages', '', 'yes');
+add_option("vizbang-which-cat", 'page', '', 'yes');
 add_option("vizbang-taxonomy-a", 'Taxon A', '', 'yes');
 add_option("vizbang-taxonomy-a-slug", 'Taxon A slug', '', 'yes');
 add_option("vizbang-taxonomy-b", 'Taxon B', '', 'yes');
@@ -41,6 +40,7 @@ function category1_init() {
 	// create a new taxonomy
 	$taxon 		=	get_option('vizbang-taxonomy-a');
 	$taxonslug 	=	get_option('vizbang-taxonomy-a-slug');
+	$wcat 		=	get_option('vizbang-which-cat');
 	
 	 $labels = array(
 	'name' => _x( $taxon, 'taxonomy general name' ),
@@ -62,7 +62,7 @@ function category1_init() {
 
 	register_taxonomy(
 		$taxon,
-		'page',
+		$wcat,
 		array(
 	    'hierarchical' => false,
 	    'labels' => $labels,
@@ -77,7 +77,7 @@ function category2_init() {
 	// create a new taxonomy
 	$taxon 		=	get_option('vizbang-taxonomy-b');
 	$taxonslug 	=	get_option('vizbang-taxonomy-b-slug');
-	
+	$wcat 		=	get_option('vizbang-which-cat');
 	 $labels = array(
 	'name' => _x( $taxon, 'taxonomy general name' ),
 	'singular_name' => _x( $taxon, 'taxonomy singular name' ),
@@ -98,7 +98,7 @@ function category2_init() {
 
 	register_taxonomy(
 		$taxon,
-		'page',
+		$wcat,
 		array(
 	    'hierarchical' => false,
 	    'labels' => $labels,
@@ -111,4 +111,7 @@ function category2_init() {
 
 add_action( 'init', 'category1_init' );
 add_action( 'init', 'category2_init' );
+
+include("vizbang_shortcode.php");//creates the shortcode for inserting a vis
+
 ?>

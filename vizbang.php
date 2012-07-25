@@ -11,12 +11,12 @@ License: GPL
 include "create_admin_page.php"; //code to make the page in the admin panel where options are set
 
 /* Runs when plugin is activated */
-register_activation_hook(__FILE__,'projectpentagon_install'); 
+register_activation_hook(__FILE__,'vizbang_install'); 
 /* Runs on plugin deactivation*/
-register_deactivation_hook( __FILE__, 'projectpentagon_remove' );
+register_deactivation_hook( __FILE__, 'vizbang_remove' );
 
 
-function projectpentagon_install() {
+function vizbang_install() {
 /* Creates new database field */
 add_option("vizbang-which-cat", 'page', '', 'yes');
 add_option("vizbang-taxonomy-a", 'Taxon A', '', 'yes');
@@ -27,7 +27,7 @@ add_option("vizbang-taxonomy-b-slug", 'Taxon B slug', '', 'yes');
 
 
 
-function projectpentagon_remove() {
+function vizbang_remove() {
 /* Deletes the database field */
 delete_option('vizbang-which-cat');
 delete_option('vizbang-taxonomy-a');
@@ -108,9 +108,59 @@ function category2_init() {
 		)
 	);
 }
+//and we add a special category, a static secondary taxnomy for pages
+// which will allow us to create a visualization which only pretains
+//to a small set of pages.
+
+function create_vizbang_pages_cats() {
+  $labels = array(
+    'name' => _x( 'VizBang Cat', 'taxonomy general name' ),
+    'singular_name' => _x( 'VizBang Cat', 'taxonomy singular name' ),
+    'search_items' =>  __( 'Search VizBang Cat' ),
+    'all_items' => __( 'All VizBang Cat' ),
+    'parent_item' => __( 'Parent VizBang Cat' ),
+    'parent_item_colon' => __( 'Parent VizBang Cat' ),
+    'edit_item' => __( 'Edit VizBang Cat' ), 
+    'update_item' => __( 'Update VizBang Cat' ),
+    'add_new_item' => __( 'Add New VizBang Cat' ),
+    'new_item_name' => __( 'New VizBang Cat' ),
+    'menu_name' => __( 'VizBang Cat' ),
+  ); 	
+
+  register_taxonomy('vizbangcat',page, array(
+    'hierarchical' => true,
+    'labels' => $labels,
+    'show_ui' => true,
+    'query_var' => true,
+    'rewrite' => array( 'slug' => 'vizbangcat' ),
+  ));
+}
+
+function vizbang_init_term(){
+	//for posts the user needs to select a category they wish to use
+	// but as categories do not exist for pages, and we cannot
+	//safely assume that EVERY page will be visualizer (though they well
+	//might be), here is where we offer a way out.
+	$parent_term = term_exists( 'fruits', 'vizbangcat' ); // array is returned if taxonomy is given
+	$parent_term_id = $parent_term['term_id']; // get numeric term id
+	wp_insert_term(
+	  'Visualizer', // the term 
+	  'vizbangcat', // the taxonomy
+	  array(
+	    'description'=> 'The default category for choosing the subset
+	    of pages that you want to be appear in the visualization. If you are
+	    making a visualization out of posts, you do not need to use
+	    this category',
+	    'slug' => 'visualizer',
+	    'parent'=> $parent_term_id
+	  )
+	);
+}
 
 add_action( 'init', 'category1_init' );
 add_action( 'init', 'category2_init' );
+add_action( 'init', 'create_vizbang_pages_cats' );
+add_action( 'init', 'vizbang_init_term' );
 
 include("vizbang_shortcode.php");//creates the shortcode for inserting a vis
 

@@ -65,13 +65,20 @@ function vizbang_generatejson () {
 		$MASTER_TAXON_ARRAY = array();
 		foreach($everydayimshuffling as $beat)
 			{$MASTER_TAXON_ARRAY[]	=	strip_tags($beat);}
-		
+		$number_of_null_rows_to_insert	=	count($MASTER_TAXON_ARRAY); //GET THIS BEFORE WE ADD TO IT
 		$x=0;
 		while ($my_query->have_posts()) : $my_query->the_post(); 
 			$x++;
 			array_unshift($MASTER_TAXON_ARRAY, 'entries'. $x .'');
 		endwhile;
 		//echo $x;//debug
+		
+		//OKAY, WE'RE GOING TO HAVE to do some math to make sure we have the right
+		// number of unmatched rows in the csv file. 
+		//$numberofiterations	=	count($MASTER_TAXON_ARRAY);
+		//$rr	=	0;	//increment this for every while_post we have
+					//subtract it from master taxona array. 
+					//insert that many null 
 			
 		//FOR THE CSV FILE, WE'RE GOING TO TAKE MASTER_TAXON_ARRAY
 		//AND COMBINE IT WITH A DE-LINKED LIST OF EVERY POST TITLE IN THIS CATEGORY\
@@ -156,8 +163,23 @@ function vizbang_generatejson () {
 			//$newarray	= array($taxonsa, $taxonsb);
 			//echo "Non-associative array output as array: ", json_encode($newarray), "\n";//debug
 			$JSON_MASTER[] = json_encode($MASTER_TO_JSON_ARRAY);
+			
 			endwhile; 
 	
+	//and add these place holders for every set of entries...	
+	for($qq=0;$qq<$number_of_null_rows_to_insert;$qq++)
+		{
+		//do it this many times....
+		$MASTER_TO_JSON_ARRAY		=  array();
+		//iterate through each item in the master array. If it exists in item arrsy
+		//mark it with a "yea"
+		for($qr=0;$qr<$countmastertaxon;$qr++)
+			{
+			$MASTER_TO_JSON_ARRAY[] = "0";
+			}	
+		$JSON_MASTER[] = json_encode($MASTER_TO_JSON_ARRAY);
+		}
+
 	$howmanyentries	=	count($MASTER_TITLE_ARRAY);
 	//////////////////////////////////// VAR DUMP DEBUG BLOCK
 	//echo "<br /><br />";//debug
@@ -201,10 +223,11 @@ function vizbang_generatejson () {
 	
 		
 	//is this url going to be static??! in every installation
-	$filename = '../wp-content/plugins/vizbang/jsons/file.txt';
+	$filename = '../wp-content/plugins/vizbang/jsons/items.json';
 	$csvfilename	= '../wp-content/plugins/vizbang/jsons/items.csv';
 	//implode all of our json arrays
-	$JSON_INSERT	=	implode(",", $JSON_MASTER);
+	$JSON_INSERT	=	"[". str_replace("\"", "", implode(",", $JSON_MASTER)) ."]";
+
 	
 	// Let's make sure the file exists and is writable first.
 	// and if not, let's give some helpful error messages to the end user, why not- right?

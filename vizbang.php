@@ -24,6 +24,9 @@ add_option("vizbang-taxonomy-a-slug", 'Taxon A slug', '', 'yes');
 add_option("vizbang-taxonomy-b", 'Taxon B', '', 'yes');
 add_option("vizbang-taxonomy-b-slug", 'Taxon B slug', '', 'yes');
 add_option("vizbang-taxonomy-if-post-cat", 'If Post Cat', '', '1');
+add_option("vizbang-taxonomy-b-color", 'Taxon B Color', '', 'yes');
+add_option("vizbang-taxonomy-a-color", 'Taxon B Color', '', 'yes');
+add_option("vizbang-category-color", 'Category Color', '', 'yes');
 }
 
 
@@ -36,6 +39,9 @@ delete_option('vizbang-taxonomy-a-slug');
 delete_option('vizbang-taxonomy-b');
 delete_option('vizbang-taxonomy-b-slug');
 delete_option('vizbang-taxonomy-if-post-cat');
+delete_option('vizbang-taxonomy-b-color');
+delete_option('vizbang-taxonomy-a-color');
+delete_option('vizbang-category-color');
 }
 
 function category1_init() {

@@ -1,2 +1,2 @@
-div.success {background: #99ff99; color: #006600; border: 2px double #6F3; padding: 1.4em;}
-div.failure {background: #FCC; color: #F00; border: 2px double #F66; padding: 1.4em;}
+div.success {background: #99ff99; color: #006600; border: 2px double #6F3; padding: 1.4em; margin-bottom: 1em;}
+div.failure {background: #FCC; color: #F00; border: 2px double #F66; padding: 1.4em; margin-bottom: 1em;}

@@ -1,4 +1,6 @@
 <?php
+//this feature is deprecated, but in an alternate future this might
+//be a useful hook. I'll leave it in here for someone to recusitate. - AK 7 30 12
 //ideally, this code will eventually generate the json file
 // we/ll use to make the visualization...
 

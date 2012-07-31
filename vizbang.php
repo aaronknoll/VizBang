@@ -157,10 +157,17 @@ function vizbang_init_term(){
 	);
 }
 
+function vizbang_uicolors(){
+		echo  "<link type='text/css' rel='stylesheet' href='";
+		echo plugins_url('/css/vizbang.css', __FILE__);
+		echo  "' />";
+}
+
 add_action( 'init', 'category1_init' );
 add_action( 'init', 'category2_init' );
 add_action( 'init', 'create_vizbang_pages_cats' );
 add_action( 'init', 'vizbang_init_term' );
+add_action('admin_head', 'vizbang_uicolors');
 
 include("vizbang_shortcode.php");//creates the shortcode for inserting a vis
 

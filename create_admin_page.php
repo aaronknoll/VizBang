@@ -20,8 +20,20 @@ function vizbang_generatejson () {
 			'category' => 'something',
 			'reserved' => 'something else',
 		), $atts ) );
-	
-		$my_query = new WP_Query('cat='.$category.'&showposts=100'); ?>
+		//setup the switch: DIFFERENT FOR POSTS, THAN FOR PAGES.
+		$postorpage	=	get_option('vizbang-which-cat');
+		$wha_cat 	=	get_option('vizbang-taxonomy-if-post-cat');
+		//trigger a different query for each; but in the end, we're going to iterate whichever cat
+		if($postorpage	== "post")
+			{
+			//echo "$wha_cat <br />";//debug
+			$my_query = new WP_Query('cat='.$wha_cat.'&showposts=100'); 
+			}
+		else
+			{
+			//$my_query = new WP_Query('cat='.$category.'&showposts=100'); 
+			}
+		?>
 		<?php while ($my_query->have_posts()) : $my_query->the_post(); ?>
 		<?php //echo the_title(); ?>
 		<?php //echo "<br />"; ?>
@@ -34,13 +46,13 @@ function vizbang_generatejson () {
 	 	$taxonsa =	taxon_to_array($termsa, 'array');
 		$taxonsb =  taxon_to_array($termsb, 'array');
 		//echo $taxonsa;
-		foreach ($taxonsa as $thiskl)
-			{echo $thiskl;}
+		//foreach ($taxonsa as $thiskl)
+		//	{echo $thiskl;}
 			
-var_dump(
- $taxonsa,
- json_encode($taxonsa)
-);
+//var_dump(
+// $taxonsa,
+ //json_encode($taxonsa)
+//);
 		//okay, I'm going a function up here to ebcompass the above commands soon.
 		
 		//$newarray	= array($taxonsa, $taxonsb);
@@ -77,6 +89,7 @@ function taxon_to_array($taxonomy, $type='text'){
 	$taxonomical_links = array();
 	foreach ($taxonomy as $term) 
 		{
+		echo "you have 1<br />";
 		$taxonomical_links[] = $term->name;
 		}
 	//$taxonomical_links is our array!!		
@@ -85,7 +98,8 @@ function taxon_to_array($taxonomy, $type='text'){
 	if($type=="text")
 		{return $taxonomied; }
 	elseif($type=="array")
-		{return $taxonomical_links;}
+		{echo "you are here b";
+			return $taxonomical_links;}
 	else 
 		{//return "invalid taxon_to_array_type";
 		return $taxonomied; }
@@ -98,6 +112,7 @@ function vizbang_mysettings() {
 	register_setting( 'vizbang-settings-group', 'vizbang-taxonomy-a-slug' );
 	register_setting( 'vizbang-settings-group', 'vizbang-taxonomy-b' );
 	register_setting( 'vizbang-settings-group', 'vizbang-taxonomy-b-slug' );
+	register_setting( 'vizbang-settings-group', 'vizbang-taxonomy-if-post-cat' );
 }
 
 
@@ -118,6 +133,11 @@ function vizbang_htmlpage() {
     	<tr valign="top">
         <th scope="row">Post/Page?</th>
         <td><input type="text" name="vizbang-which-cat" value="<?php echo get_option('vizbang-which-cat'); ?>" /></td>
+        </tr>
+        <tr valign="top">
+        	<th scope="row">If Post; Which Category (number)</th>
+        	<td><input type="text" name="vizbang-taxonomy-if-post-cat" 
+        		value="<?php echo get_option('vizbang-taxonomy-if-post-cat'); ?>" /></td>
         </tr>
     </table>
     
